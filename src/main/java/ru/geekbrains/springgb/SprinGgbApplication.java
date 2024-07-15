@@ -11,8 +11,9 @@ public class SprinGgbApplication {
 
         ApplicationContext context = SpringApplication.run(SprinGgbApplication.class, args);
 
-        TicketNumberGenerator ticketNumberGenerator = context.getBean(TicketNumberGenerator.class);
-        System.out.println(ticketNumberGenerator);
-
+        TicketBoard ticket = context.getBean(TicketBoard.class);
+        System.out.println(ticket.newTicket());
+        System.out.println(ticket.newTicket());
+        System.out.println(ticket.newTicket());
     }
 }
