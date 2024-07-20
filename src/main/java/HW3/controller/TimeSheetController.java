@@ -1,6 +1,7 @@
 package HW3.controller;
 
 import HW3.model.Timesheet;
+import HW3.service.TimesheetService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/timesheets")
 public class TimeSheetController {
 
     // GET - получить  (не содержит "body" тела)
@@ -20,15 +22,16 @@ public class TimeSheetController {
     //DELETE - удалить
     // PATCH - изменение частичное
 
-    private final  List<Timesheet> timesheets = new ArrayList<>();
-    private static Long sequence = 1L;
+    private final TimesheetService service;
+    public TimeSheetController(TimesheetService service) {
+        this.service = service;
+    }
 
-    @GetMapping("/timesheets/{id}")   //получить по id
+    @GetMapping("/{id}")   //получить по id
     //@GetMapping("/timesheets/{id}")   //получить по какой то либо записи например id
     public ResponseEntity<Timesheet>  get(@PathVariable Long id ) {
-        Optional<Timesheet> ts = timesheets.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst();
+
+        Optional<Timesheet> ts = service.getById(id);
         if (ts.isPresent()) {
             return ResponseEntity.ok().body(ts.get());
            // return ResponseEntity.status(HttpStatus.OK).body(ts.get()); 2 способ
@@ -36,24 +39,20 @@ public class TimeSheetController {
         return ResponseEntity.notFound().build();
 
     }
-    @GetMapping("/timesheets")   //получить все
+    @GetMapping()   //получить все
     public List<Timesheet> getAll() {
-        return timesheets;
+        return service.getAll();
     }
 
 
-    @PostMapping("/timesheets")  // создание нового ресурса
+    @PostMapping()  // создание нового ресурса
     public ResponseEntity<Timesheet> create(@RequestBody Timesheet timesheet) {
-        timesheet.setId(sequence++);
-        timesheets.add(timesheet);
+       timesheet = service.create(timesheet);
         return ResponseEntity.status(HttpStatus.CREATED).body(timesheet);
     }
-    @DeleteMapping("/timesheets/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void>  delete(@PathVariable Long id) {
-         timesheets.stream()
-                .filter(it -> Objects.equals(it.getId(), id))
-                .findFirst()
-                .ifPresent(timesheets::remove);
+         service.delete(id);
          //204 no Content
          return ResponseEntity.noContent().build();
 
