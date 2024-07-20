@@ -1,6 +1,5 @@
-package ru.geekbrains.springgb;
+package ru.geekbrains.springgb.HW2;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

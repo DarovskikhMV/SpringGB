@@ -1,4 +1,4 @@
-package ru.geekbrains.springgb;
+package ru.geekbrains.springgb.HW2;
 
 import lombok.Data;
 

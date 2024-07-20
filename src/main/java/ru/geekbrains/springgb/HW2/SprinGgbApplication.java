@@ -1,4 +1,4 @@
-package ru.geekbrains.springgb;
+package ru.geekbrains.springgb.HW2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,7 +12,14 @@ public class SprinGgbApplication {
         ApplicationContext context = SpringApplication.run(SprinGgbApplication.class, args);
 
         TicketNumberGenerator ticketNumberGenerator = context.getBean(TicketNumberGenerator.class);
-        System.out.println(ticketNumberGenerator);
+        System.out.println(ticketNumberGenerator.createNewNumber());
+        System.out.println(ticketNumberGenerator.createNewNumber());
+        System.out.println(ticketNumberGenerator.createNewNumber());
+
+        TicketBoard ticket = context.getBean(TicketBoard.class);
+        System.out.println(ticket.newTicket());
+        System.out.println(ticket.newTicket());
+
 
     }
 }
