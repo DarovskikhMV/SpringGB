@@ -6,31 +6,38 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 @Repository
 public class ProjectRepository {
     private static Long sequence = 1L;
     private final List<Project> projects = new ArrayList<>();
 
-    public List<Project> findAll() {
-        return new ArrayList<>(projects);
+    public Optional<Project> getById(Long id) {
+        return projects.stream()
+                .filter(project -> project.getId().equals(id))
+                .findFirst();
     }
 
-    public Optional<Project> findById(Long id) {
-        return projects.stream().filter(project -> project.getId().equals(id)).findFirst();
+    public List<Project> getAll(){
+        return List.copyOf(projects);
     }
 
-    public Project save(Project project) {
-        if (project.getId() == null) {
-            project.setId(sequence++);
-        } else {
-            deleteById(project.getId());
-        }
+    public Project create(Project project){
+        project.setId(sequence++);
         projects.add(project);
         return project;
     }
 
-    public void deleteById(Long id) {
-        projects.removeIf(project -> project.getId().equals(id));
+//    public Project update(Long id, Project updatedProject){
+//        Project existingProject = getById(id).get();
+//        updatedProject.
+//
+//    }
+
+    public void delete(Long id){
+//        projects.removeIf(project -> project.getId().equals(id));
+        projects.stream()
+                .filter(project -> project.getId().equals(id))
+                .findFirst()
+                .ifPresent(projects::remove);
     }
 }

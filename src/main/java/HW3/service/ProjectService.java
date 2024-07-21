@@ -1,48 +1,51 @@
 package HW3.service;
 
 import HW3.model.Project;
+import HW3.model.Timesheet;
 import HW3.repository.ProjectRepository;
+import HW3.repository.TimesheetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
-
     private final ProjectRepository projectRepository;
+    private final TimesheetRepository timesheetRepository;
 
-    @Autowired
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, TimesheetRepository timesheetRepository) {
         this.projectRepository = projectRepository;
+        this.timesheetRepository = timesheetRepository;
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public Optional<Project> getById(Long id){
+        return projectRepository.getById(id);
     }
 
-    public Project getProjectById(Long id) {
-        Optional<Project> project = projectRepository.findById(id);
-        return project.orElse(null);
+    public List<Project> getAll(){
+        return projectRepository.getAll();
     }
 
-    public Project createProject(Project project) {
-        return projectRepository.save(project);
+    public Project create(Project project){
+        return projectRepository.create(project);
     }
 
-    public Project updateProject(Long id, Project projectDetails) {
-        Optional<Project> projectOptional = projectRepository.findById(id);
-        if (projectOptional.isPresent()) {
-            Project project = projectOptional.get();
-            project.setName(projectDetails.getName());
-            return projectRepository.save(project);
-        } else {
-            return null;
+    public void delete(Long id){
+        projectRepository.delete(id);
+    }
+
+    public List<Timesheet> getTimesheetsByProjectId(Long id){
+        List<Timesheet> timesheetsByProjectId = new ArrayList<>();
+        for (Timesheet timesheet : timesheetRepository.getAll()) {
+            if(timesheet.getProjectId().equals(id)){
+                timesheetsByProjectId.add(timesheet);
+            }
         }
-    }
-
-    public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
+        return timesheetsByProjectId;
     }
 }
