@@ -1,4 +1,4 @@
-package HW3.controller;
+package HW3.exception;
 
 import lombok.Data;
 

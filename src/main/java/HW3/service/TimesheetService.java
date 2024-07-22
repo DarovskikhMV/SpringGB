@@ -9,30 +9,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
-@Service  //метка того что сервисный слой, тоже самое, что и Component
-public class TimesheetService {
-    private final TimesheetRepository repository;
-
-    public TimesheetService(TimesheetRepository repository) {
-        this.repository = repository;
-
-    }
-
-    public Optional<Timesheet> getById(Long id ) {
-        return repository.getById(id);
-    }
-
-    public List<Timesheet> getAll() {
-        return repository.getAll();
-    }
-
-    public Timesheet create(Timesheet timesheet) {
-        return repository.create(timesheet);
-    }
-
-    public void delete(Long id) {
-        repository.delete(id);
-    }
-
+public interface TimesheetService {
+    Optional<Timesheet> findById(Long id);
+    List<Timesheet> findAll();
+    Timesheet create(Timesheet timesheet);
+    void delete(Long id);
+    List<Timesheet> getCreatedAfter(LocalDate date);
+    List<Timesheet> getCreatedBefore(LocalDate date);
 }

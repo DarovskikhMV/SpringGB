@@ -1,38 +1,45 @@
 package HW3.page;
 
-import HW3.service.ProjectPageService;
+import HW3.model.Employee;
+import HW3.model.Project;
+import HW3.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/home/projects")
-@RequiredArgsConstructor
 public class ProjectPageController {
-    private final ProjectPageService service;
+
+    private final ProjectService service;
 
     @GetMapping
-    public String getAllProjects(Model model){
-        List<ProjectPageDto> projects = service.findAll();
-        model.addAttribute("projects", projects);
-        return "projects-page.html";
+    @ResponseStatus(HttpStatus.OK)
+    public String getProjects(Model model) {
+        model.addAttribute("projects", service.getProjects());
+        return "projects-page";
     }
 
     @GetMapping("/{id}")
-    public String getProjectPage(@PathVariable Long id, Model model){
-        Optional<ProjectPageDto> projectOpt = service.findById(id);
-        if(projectOpt.isEmpty()){
-            throw new NoSuchElementException();
+    public String getById(@PathVariable Long id, Model model) {
+        Optional<Project> project = service.findById(id);
+        Set<Employee> employees = service.findProjectEmployees(id);
+
+        if (project.isPresent()) {
+            model.addAttribute("project", project.get());
+            model.addAttribute("employees", employees);
+            return "project-page";
         }
-        model.addAttribute("project", projectOpt.get());
-        return "project-page.html";
+
+        throw new NoSuchElementException("There is no project with id #" + id);
     }
+
 }

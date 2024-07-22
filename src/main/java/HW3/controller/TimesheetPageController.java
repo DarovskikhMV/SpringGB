@@ -1,8 +1,7 @@
 package HW3.controller;
 
-import HW3.model.Project;
-import HW3.model.Timesheet;
-import HW3.service.TimesheetService;
+import HW3.page.TimesheetPageDto;
+import HW3.service.TimesheetPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -18,26 +19,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TimesheetPageController {
 
-    private final TimesheetService service;
+    private final TimesheetPageService service;
 
+    @GetMapping
+    public String getAllTimesheets(Model model) {
+        List<TimesheetPageDto> timesheets = service.findAll();
+        model.addAttribute("timesheets", timesheets);
+        return "timesheets-page.html";
+    }
+
+    // GET /home/timesheets/{id}
     @GetMapping("/{id}")
-    public String getTimesheetsPage(@PathVariable Long id, Model model)  {
-        Optional<Timesheet> timesheetOpt = service.getById(id);
-
+    public String getTimesheetPage(@PathVariable Long id, Model model) {
+        Optional<TimesheetPageDto> timesheetOpt = service.findById(id);
         if (timesheetOpt.isEmpty()) {
-            // FIXME вернуть страницу not found
-            //return not-found.html
-            throw  new NoSuchElementException();
+            throw new NoSuchElementException("There is no timesheet with id #" + id);
         }
-        Timesheet timesheet = timesheetOpt.get();
 
-
-
-        model.addAttribute("timesheetId", timesheet.getId());
-        model.addAttribute("timesheetMinutes", timesheet.getMinutes());
-        model.addAttribute("timesheetCreatedAt", timesheet.getCreatedAt().toString());
+        model.addAttribute("timesheet", timesheetOpt.get());
         return "timesheet-page.html";
-
     }
 
 }
